@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NineSweeper</string>
+    <string name="covered_square_content_text">Covered space</string>
+</resources>
