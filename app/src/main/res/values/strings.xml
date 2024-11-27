@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">NineSweeper</string>
     <string name="covered_square_content_text">Covered space</string>
+    <string name="flag_square_content_text">Flagged space</string>
+    <string name="mine_square_content_text">Mine</string>
+    <string name="number_square_content_format">space with %d adjacent mines</string>
 </resources>

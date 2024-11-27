@@ -31,7 +31,7 @@ class MineSpace {
             if (this.flagged) {
                 Image(
                     bitmap = ImageBitmap.imageResource(R.drawable.flag_square),
-                    contentDescription = "flagged space",
+                    contentDescription = R.string.flag_square_content_text.toString(),
                     modifier = modifier,
                 )
             }
@@ -39,7 +39,7 @@ class MineSpace {
             if (this.mine) {
                 Image(
                     bitmap = ImageBitmap.imageResource(R.drawable.mine_square),
-                    contentDescription = "space with mine",
+                    contentDescription = R.string.mine_square_content_text.toString(),
                     modifier = modifier,
                 )
             } else {
@@ -63,7 +63,10 @@ class MineSpace {
 
                     Image(
                         bitmap = ImageBitmap.imageResource(number),
-                        contentDescription = "space with $this.adjacentMines adjacent mines",
+                        contentDescription = String.format(
+                            R.string.number_square_content_format.toString(),
+                            this.adjacentMines
+                        ),
                         modifier = modifier
                     )
                 }
