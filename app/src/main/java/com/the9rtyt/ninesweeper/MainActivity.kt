@@ -6,10 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -33,31 +35,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             NineSweeperTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     color = Color.LightGray
                 ) {
                     Column(
                         modifier = Modifier
                     ) {
-                        Row(
+                        Box(
                             modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .background(Color.Gray)
                         ) {
-                            Image(
-                                bitmap = ImageBitmap.imageResource(R.drawable.mine_square),
-                                contentDescription = "space with mine",
+                            NineControlsView(
+                                field = field,
                                 modifier = Modifier
-                                    .clickable { field.generateField() }
-                                    .weight(0.1f)
-                                    .align(Alignment.Bottom)
-                            )
-
-                            Image(
-                                bitmap = ImageBitmap.imageResource(R.drawable.flag_square),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .clickable { field.flagMode = !field.flagMode }
-                                    .weight(0.1f)
-                                    .align(Alignment.Top)
                             )
                         }
 
@@ -78,6 +71,29 @@ class MainActivity : ComponentActivity() {
         }
 
         field.generateField()
+    }
+}
+
+@Composable
+fun NineControlsView(field: MineField, modifier: Modifier = Modifier) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Image(
+            bitmap = ImageBitmap.imageResource(R.drawable.mine_square),
+            contentDescription = "space with mine",
+            modifier = modifier
+                .clickable { field.generateField() }
+        )
+
+        Image(
+            bitmap = ImageBitmap.imageResource(R.drawable.flag_square),
+            contentDescription = null,
+            modifier = modifier
+                .clickable { field.flagMode = !field.flagMode }
+        )
     }
 }
 
