@@ -5,6 +5,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
@@ -25,9 +29,9 @@ class MineField(
         WON
     }
 
-    var flagCount = 0
-    var gameStatus = GameStatus.READY
-    var flagMode = false
+    var mineCount by mutableIntStateOf(mines)
+    var flagMode by mutableStateOf(false)
+    private var gameStatus = GameStatus.READY
 
     private var fieldCleared = 0
     private var spaceWidth = 99f
@@ -184,11 +188,13 @@ class MineField(
                 clearNum(x, y)
             }
         } else { //not revealed
-            clickedSpace.flagged = !clickedSpace.flagged
-            if (clickedSpace.flagged) {
-                flagCount++
-            } else {
-                flagCount--
+            if (mineCount > 0) {
+                clickedSpace.flagged = !clickedSpace.flagged
+                if (clickedSpace.flagged) {
+                    mineCount--
+                } else {
+                    mineCount++
+                }
             }
         }
     }
@@ -293,7 +299,7 @@ class MineField(
 
         //reset things
         fieldCleared = 0
-        flagCount = 0
+        mineCount = mines
         flagMode = false
         gameStatus = GameStatus.READY
     }

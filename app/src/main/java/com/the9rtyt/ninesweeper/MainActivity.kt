@@ -9,11 +9,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +28,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.the9rtyt.ninesweeper.ui.theme.NineSweeperTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,34 +44,31 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize(),
-                    color = Color.LightGray
+                    color = MaterialTheme.colorScheme.primary
                 ) {
                     Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
+                            .padding(4.dp)
                     ) {
-                        Box(
+                        NineControlsView(
+                            field = field,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(4.dp)
-                                .background(Color.Gray)
-                        ) {
-                            NineControlsView(
-                                field = field,
-                                modifier = Modifier
-                            )
-                        }
+                                .height(44.dp)
+                                .background(MaterialTheme.colorScheme.secondary)
+                        )
 
-
-                        Box(
-                            contentAlignment = Alignment.BottomCenter,
+                        Spacer(
                             modifier = Modifier
-                                .padding(4.dp)
-                                .background(Color.Gray)
-                        ) {
-                            field.MineFieldView(
-                                modifier = Modifier
-                            )
-                        }
+                                .height(4.dp)
+                        )
+
+                        field.MineFieldView(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.secondary)
+                        )
                     }
                 }
             }
@@ -76,24 +80,49 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NineControlsView(field: MineField, modifier: Modifier = Modifier) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-            .fillMaxWidth()
     ) {
-        Image(
-            bitmap = ImageBitmap.imageResource(R.drawable.mine_square),
-            contentDescription = "space with mine",
-            modifier = modifier
-                .clickable { field.generateField() }
+        Text(
+            text = "${field.mineCount}",
+            fontSize = 40.sp,
+            modifier = Modifier
+                .align(Alignment.CenterStart)
         )
 
         Image(
-            bitmap = ImageBitmap.imageResource(R.drawable.flag_square),
+            bitmap = ImageBitmap.imageResource(R.drawable.mine_square),
             contentDescription = null,
-            modifier = modifier
-                .clickable { field.flagMode = !field.flagMode }
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f)
+                .clickable { field.generateField() }
         )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .aspectRatio(1f)
+                .clickable { field.flagMode = !field.flagMode }
+        ) {
+            Image(
+                bitmap = ImageBitmap.imageResource(R.drawable.flag_square),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+
+            Image(
+                bitmap = ImageBitmap.imageResource(R.drawable.mine_square),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(if (field.flagMode) -1f else 1f)
+
+            )
+        }
     }
 }
 
