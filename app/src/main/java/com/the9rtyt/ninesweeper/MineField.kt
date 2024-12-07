@@ -31,10 +31,11 @@ class MineField(
     }
 
     fun clearSpace(x: Int, y: Int) {
-        if (gameStatus == GameStatus.READY) {
-            gameStatus = GameStatus.PLAYING
+
+        if (gameStatus != GameStatus.PLAYING) {
+            if (gameStatus == GameStatus.READY) gameBegin()
+            else return
         }
-        if (gameStatus != GameStatus.PLAYING) return
 
 
 
@@ -88,7 +89,7 @@ class MineField(
     private fun clear(x: Int, y: Int) {
         for (offsetX in -1..1) {
             for (offsetY in -1..1) {
-                if (x == 0 && y == 0) continue
+                if (offsetX == 0 && offsetY == 0) continue
                 if (x + offsetX < 0 || x + offsetX >= sizeX || y + offsetY < 0 || y + offsetY >= sizeY) continue
 
                 val space = field[x + offsetX][y + offsetY]
@@ -126,7 +127,13 @@ class MineField(
         }
     }
 
+    private fun gameBegin() {
+        generateField()
+        gameStatus = GameStatus.PLAYING
+    }
+
     private fun gameLost() {
+        Log.i(this.toString(), "Game Lost")
         gameStatus = GameStatus.LOST
 
         //loop through field and reveal the mines
@@ -141,14 +148,11 @@ class MineField(
     }
 
     private fun gameWon() {
+        Log.i(this.toString(), "Game Won")
         gameStatus = GameStatus.WON
     }
 
-    fun generateField() {
-        Log.i("MineSweeper", "Generating field with $mines mines")
-        var genMines = mines
-        var spacesGenerated = 0
-
+    fun gameReset() {
         //reset field MineSpaces
         //loop throw columns
         for (rows in field) {
@@ -159,6 +163,19 @@ class MineField(
                 space.adjacentMines = 0
             }
         }
+
+        //reset fields
+        flagCount = 0
+        flagMode = false
+        gameStatus = GameStatus.READY
+        fieldCleared = 0
+    }
+
+    private fun generateField() {
+        Log.i(this.toString(), "Generating ${sizeX}x${sizeY} field with $mines mines")
+        var genMines = mines
+        var spacesGenerated = 0
+
 
         //generate mines and add numbers
         //loop throw columns
@@ -182,11 +199,9 @@ class MineField(
                 spacesGenerated++
             }
         }
+    }
 
-        //reset things
-        fieldCleared = 0
-        flagCount = 0
-        flagMode = false
-        gameStatus = GameStatus.READY
+    override fun toString(): String {
+        return "NineField"
     }
 }

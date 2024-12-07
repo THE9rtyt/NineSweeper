@@ -48,8 +48,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
 
-        val field = MineField(13, 25, 69)
-
         setContent {
             NineSweeperTheme {
                 Surface(
@@ -57,6 +55,8 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize(),
                     color = MaterialTheme.colorScheme.primary
                 ) {
+                    val field = MineField(13, 25, 69)
+
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -85,8 +85,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        field.generateField()
     }
 }
 
@@ -111,7 +109,7 @@ fun NineControlsView(field: MineField, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxHeight()
                 .aspectRatio(1f)
-                .clickable { field.generateField() }
+                .clickable { field.gameReset() }
         )
 
         //draw flag/mine mode
@@ -187,7 +185,7 @@ fun MineFieldView(field: MineField, modifier: Modifier = Modifier) {
                         val row = (tapOffset.y / spaceHeight).toInt()
 
 
-                        Log.i("MineSweeper", "tap at row: $row column: $column")
+                        Log.d("NineSweeper", "tap at row: $row column: $column")
 
                         field.clearSpace(column, row)
                     }
