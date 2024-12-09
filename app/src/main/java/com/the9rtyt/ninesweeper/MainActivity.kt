@@ -201,13 +201,13 @@ fun MineFieldView(field: MineField, modifier: Modifier = Modifier) {
                 val intOffset = IntOffset(offset.x.toInt(), offset.y.toInt())
                 val intSize = IntSize(spaceWidth.toInt(), spaceHeight.toInt())
 
-                if (!space.revealed) {
+                if (!space.isRevealed()) {
                     drawImage(
                         image = coveredSquare,
                         dstOffset = intOffset,
                         dstSize = intSize,
                     )
-                    if (space.flagged) {
+                    if (space.isFlagged()) {
                         drawImage(
                             image = flaggedSquare,
                             dstOffset = intOffset,
@@ -215,7 +215,7 @@ fun MineFieldView(field: MineField, modifier: Modifier = Modifier) {
                         )
                     }
                 } else { //revealed
-                    if (space.mine) {
+                    if (space.isMine()) {
                         drawImage(
                             image = mineSquare,
                             dstOffset = intOffset,
@@ -227,8 +227,8 @@ fun MineFieldView(field: MineField, modifier: Modifier = Modifier) {
                             dstOffset = intOffset,
                             dstSize = intSize,
                         )
-                        if (space.adjacentMines > 0) {
-                            val number = when (space.adjacentMines) {
+                        if (space.getAdjacentMines() > 0) {
+                            val number = when (space.getAdjacentMines()) {
                                 1 -> text1Square
                                 2 -> text2Square
                                 3 -> text3Square

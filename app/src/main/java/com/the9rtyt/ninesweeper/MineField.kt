@@ -53,14 +53,14 @@ class MineField(
     private fun onSpaceClicked(x: Int, y: Int) {
         val clickedSpace = field[x][y]
 
-        if (!clickedSpace.revealed && !clickedSpace.flagged) { //if it's not revealed and not flagged
+        if (!clickedSpace.isRevealed() && !clickedSpace.isFlagged()) { //if it's not revealed and not flagged
             clickedSpace.reveal()
             fieldCleared++
-            if (!clickedSpace.mine) { //if it's not a mine
-                if (clickedSpace.adjacentMines == 0) {
+            if (!clickedSpace.isMine()) {
+                if (clickedSpace.getAdjacentMines() == 0) {
                     clear(x, y)
                 }
-            } else { //if it's a mine
+            } else {
                 gameLost()
             }
         }
@@ -69,17 +69,17 @@ class MineField(
     private fun onFlagModeClicked(x: Int, y: Int) {
         val clickedSpace = field[x][y]
 
-        if (clickedSpace.revealed) {
-            if (clickedSpace.adjacentMines > 0) {
+        if (clickedSpace.isRevealed()) {
+            if (clickedSpace.getAdjacentMines() > 0) {
                 clearNum(x, y)
             }
-        } else { //not revealed
-            if (clickedSpace.flagged) {
-                clickedSpace.flagged = false
+        } else {
+            if (clickedSpace.isFlagged()) {
+                clickedSpace.unFlag()
                 flagCount--
             } else {
                 if (flagCount < mines) {
-                    clickedSpace.flagged = true
+                    clickedSpace.flag()
                     flagCount++
                 }
             }
@@ -93,16 +93,16 @@ class MineField(
                 if (x + offsetX < 0 || x + offsetX >= sizeX || y + offsetY < 0 || y + offsetY >= sizeY) continue
 
                 val space = field[x + offsetX][y + offsetY]
-                if (space.flagged || space.revealed) continue
+                if (space.isFlagged() || space.isRevealed()) continue
                 space.reveal()
                 fieldCleared++
 
-                if (space.adjacentMines == 0) {
+                if (space.getAdjacentMines() == 0) {
                     clear(
                         x = x + offsetX,
                         y = y + offsetY
                     )
-                } else if (space.mine) {
+                } else if (space.isMine()) {
                     gameLost()
                 }
             }
@@ -110,7 +110,7 @@ class MineField(
     }
 
     private fun clearNum(x: Int, y: Int) {
-        var foundMines = 0
+        var foundFlags = 0
         //loop around space to find flagged spaces
         for (offsetX in -1..1) {
             for (offsetY in -1..1) {
@@ -118,11 +118,11 @@ class MineField(
                 if (x + offsetX < 0 || x + offsetX >= sizeX ||
                     y + offsetY < 0 || y + offsetY >= sizeY
                 ) continue
-                if (field[x + offsetX][y + offsetY].flagged) foundMines++
+                if (field[x + offsetX][y + offsetY].isFlagged()) foundFlags++
             }
         }
 
-        if (foundMines >= field[x][y].adjacentMines) {
+        if (foundFlags >= field[x][y].getAdjacentMines()) {
             clear(x, y)
         }
     }
@@ -139,7 +139,7 @@ class MineField(
         //loop through field and reveal the mines
         for (rows in field) {
             for (space in rows) {
-                if (space.mine) {
+                if (space.isMine()) {
                     space.reveal()
                 }
             }
@@ -158,9 +158,7 @@ class MineField(
         for (rows in field) {
             //loop through rows
             for (space in rows) {
-                space.revealed = false
-                space.flagged = false
-                space.adjacentMines = 0
+                space.reset()
             }
         }
 
@@ -176,12 +174,14 @@ class MineField(
         var genMines = mines
         var spacesGenerated = 0
 
-
         //generate mines and add numbers
         //loop throw columns
         for (column in 0..<sizeX) {
             //loop through rows
             for (row in 0..<sizeY) {
+                val space = field[column][row]
+                if(space.isGenerated()) continue
+
                 val newMine = Math.random() * (sizeX * sizeY - spacesGenerated) < genMines
                 if (newMine) {
                     genMines--
@@ -189,13 +189,12 @@ class MineField(
                         for (y in -1..1) {
 //                            if (x == 0 && y == 0) continue
                             if (column + x < 0 || column + x >= sizeX || row + y < 0 || row + y >= sizeY) continue
-                            field[column + x][row + y].adjacentMines++
+                            field[column + x][row + y].incrementAdjacentMines()
                         }
                     }
                 }
 
-                field[column][row].mine = newMine
-
+                space.generate(newMine)
                 spacesGenerated++
             }
         }
