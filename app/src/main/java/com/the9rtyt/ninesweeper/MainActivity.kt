@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.the9rtyt.ninesweeper.ui.theme.NineSweeperTheme
+import com.the9rtyt.ninesweeper.ui.theme.game_won_color
+import com.the9rtyt.ninesweeper.ui.theme.game_lost_color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +112,9 @@ fun NineControlsView(field: MineField, modifier: Modifier = Modifier) {
                 .fillMaxHeight()
                 .aspectRatio(1f)
                 .clickable { field.gameReset() }
+                .background(color = if(field.isWon()) game_won_color else (if(field.isLost()) game_lost_color else Color(
+                    0x00000000
+                )))
         )
 
         //draw flag/mine mode

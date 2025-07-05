@@ -20,7 +20,7 @@ class MineField(
 
     var flagCount by mutableIntStateOf(0)
     var flagMode by mutableStateOf(false)
-    private var gameStatus = GameStatus.READY
+    private var gameStatus = mutableStateOf(GameStatus.READY)
 
     private var fieldCleared = 0
 
@@ -32,12 +32,10 @@ class MineField(
 
     fun clearSpace(x: Int, y: Int) {
 
-        if (gameStatus != GameStatus.PLAYING) {
-            if (gameStatus == GameStatus.READY) gameBegin()
+        if (gameStatus.value != GameStatus.PLAYING) {
+            if (gameStatus.value == GameStatus.READY) gameBegin()
             else return
         }
-
-
 
         if (flagMode) {
             onFlagModeClicked(x, y)
@@ -129,12 +127,12 @@ class MineField(
 
     private fun gameBegin() {
         generateField()
-        gameStatus = GameStatus.PLAYING
+        gameStatus.value = GameStatus.PLAYING
     }
 
     private fun gameLost() {
         Log.i(this.toString(), "Game Lost")
-        gameStatus = GameStatus.LOST
+        gameStatus.value = GameStatus.LOST
 
         //loop through field and reveal the mines
         for (rows in field) {
@@ -149,7 +147,7 @@ class MineField(
 
     private fun gameWon() {
         Log.i(this.toString(), "Game Won")
-        gameStatus = GameStatus.WON
+        gameStatus.value = GameStatus.WON
     }
 
     fun gameReset() {
@@ -165,7 +163,7 @@ class MineField(
         //reset fields
         flagCount = 0
         flagMode = false
-        gameStatus = GameStatus.READY
+        gameStatus.value = GameStatus.READY
         fieldCleared = 0
     }
 
@@ -198,6 +196,14 @@ class MineField(
                 spacesGenerated++
             }
         }
+    }
+
+    fun isWon(): Boolean {
+        return gameStatus.value == GameStatus.WON
+    }
+
+    fun isLost(): Boolean {
+        return gameStatus.value == GameStatus.LOST
     }
 
     override fun toString(): String {
