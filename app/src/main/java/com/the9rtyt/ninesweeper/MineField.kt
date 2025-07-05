@@ -51,7 +51,10 @@ class MineField(
     private fun onSpaceClicked(x: Int, y: Int) {
         val clickedSpace = field[x][y]
 
-        if (!clickedSpace.isRevealed() && !clickedSpace.isFlagged()) { //if it's not revealed and not flagged
+        if(clickedSpace.isRevealed()) {
+            if (clickedSpace.getAdjacentMines() > 0)
+                clearNum(x, y)
+        } else if (!clickedSpace.isFlagged()) { //if it's not revealed and not flagged
             clickedSpace.reveal()
             fieldCleared++
             if (!clickedSpace.isMine()) {
