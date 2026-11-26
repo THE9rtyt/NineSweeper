@@ -91,7 +91,7 @@ class MineField(
         for (offsetX in -1..1) {
             for (offsetY in -1..1) {
                 if (offsetX == 0 && offsetY == 0) continue
-                if (x + offsetX < 0 || x + offsetX >= sizeX || y + offsetY < 0 || y + offsetY >= sizeY) continue
+                if (x + offsetX !in 0..<sizeX || y + offsetY < 0 || y + offsetY >= sizeY) continue
 
                 val space = field[x + offsetX][y + offsetY]
                 if (space.isFlagged() || space.isRevealed()) continue
@@ -116,8 +116,8 @@ class MineField(
         for (offsetX in -1..1) {
             for (offsetY in -1..1) {
                 if (x == 0 && y == 0) continue
-                if (x + offsetX < 0 || x + offsetX >= sizeX ||
-                    y + offsetY < 0 || y + offsetY >= sizeY
+                if (x + offsetX !in 0..<sizeX ||
+                    y + offsetY !in 0..<sizeY
                 ) continue
                 if (field[x + offsetX][y + offsetY].isFlagged()) foundFlags++
             }
@@ -189,7 +189,7 @@ class MineField(
                     for (x in -1..1) {
                         for (y in -1..1) {
 //                            if (x == 0 && y == 0) continue
-                            if (column + x < 0 || column + x >= sizeX || row + y < 0 || row + y >= sizeY) continue
+                            if (column + x !in 0..<sizeX || row + y !in 0..<sizeY) continue
                             field[column + x][row + y].incrementAdjacentMines()
                         }
                     }
